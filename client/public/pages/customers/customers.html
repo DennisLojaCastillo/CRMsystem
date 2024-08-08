@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <script defer src="../../js/navbar.js"></script>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Customers</h1>
+        <button class="button is-primary" onclick="window.location.href='addCustomer.html'">Add New Customer</button>
+        <!-- Customer list will be here -->
+        <div id="customer-list"></div>
+      </div>
+    </section>
+  </div>
+  <script>
+    // Load the navbar
+    fetch('../navbar.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
+      });
+
+    // Fetch and display customers
+    async function fetchCustomers() {
+      const response = await fetch('/api/customers');
+      const customers = await response.json();
+      const customerList = document.getElementById('customer-list');
+      customerList.innerHTML = '';
+      customers.forEach(customer => {
+        const customerItem = document.createElement('div');
+        customerItem.className = 'box';
+        customerItem.innerHTML = `
+          <p><strong>Name:</strong> ${customer.name}</p>
+          <p><strong>Email:</strong> ${customer.email}</p>
+          <p><strong>Phone:</strong> ${customer.phone}</p>
+          <p><strong>Company:</strong> ${customer.company}</p>
+          <p><strong>Website:</strong> ${customer.website}</p>
+          <p><strong>Industry:</strong> ${customer.industry}</p>
+          <button class="button is-small is-info" onclick="window.location.href='editCustomer.html?id=${customer.id}'">Edit</button>
+          <button class="button is-small is-danger" onclick="deleteCustomer(${customer.id})">Delete</button>
+        `;
+        customerList.appendChild(customerItem);
+      });
+    }
+
+    async function deleteCustomer(id) {
+      const response = await fetch(`/api/customers/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        fetchCustomers();
+      } else {
+        alert('Failed to delete customer');
+      }
+    }
+
+    fetchCustomers();
+  </script>
+</body>
+</html>

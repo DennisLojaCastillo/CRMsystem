@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meetings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <script defer src="../../js/navbar.js"></script>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Meetings</h1>
+        <button class="button is-primary" onclick="window.location.href='addMeeting.html'">Add New Meeting</button>
+        <!-- Meeting list will be here -->
+        <div id="meeting-list"></div>
+      </div>
+    </section>
+  </div>
+  <script>
+    // Load the navbar
+    fetch('../navbar.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
+      });
+
+    // Fetch and display meetings
+    async function fetchMeetings() {
+      const response = await fetch('/api/meetings');
+      const meetings = await response.json();
+      const meetingList = document.getElementById('meeting-list');
+      meetingList.innerHTML = '';
+      meetings.forEach(meeting => {
+        const meetingItem = document.createElement('div');
+        meetingItem.className = 'box';
+        meetingItem.innerHTML = `
+          <p><strong>Title:</strong> ${meeting.title}</p>
+          <p><strong>Description:</strong> ${meeting.description}</p>
+          <p><strong>Date:</strong> ${meeting.date}</p>
+          <p><strong>Customer ID:</strong> ${meeting.customerId}</p>
+          <button class="button is-small is-info" onclick="window.location.href='editMeeting.html?id=${meeting.id}'">Edit</button>
+          <button class="button is-small is-danger" onclick="deleteMeeting(${meeting.id})">Delete</button>
+        `;
+        meetingList.appendChild(meetingItem);
+      });
+    }
+
+    async function deleteMeeting(id) {
+      const response = await fetch(`/api/meetings/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        fetchMeetings();
+      } else {
+        alert('Failed to delete meeting');
+      }
+    }
+
+    fetchMeetings();
+  </script>
+</body>
+</html>

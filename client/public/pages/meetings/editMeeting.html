@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Meeting</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <script defer src="../../js/navbar.js"></script>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Edit Meeting</h1>
+        <form id="editMeetingForm">
+          <div class="field">
+            <label class="label">Title</label>
+            <div class="control">
+              <input class="input" type="text" id="title" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Description</label>
+            <div class="control">
+              <input class="input" type="text" id="description" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Date</label>
+            <div class="control">
+              <input class="input" type="datetime-local" id="date" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Customer ID</label>
+            <div class="control">
+              <input class="input" type="number" id="customerId" required>
+            </div>
+          </div>
+          <div class="control">
+            <button class="button is-primary" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+  <script>
+    // Load the navbar
+    fetch('../navbar.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
+      });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const meetingId = urlParams.get('id');
+
+    async function fetchMeeting() {
+      const response = await fetch(`/api/meetings/${meetingId}`);
+      const meeting = await response.json();
+      document.getElementById('title').value = meeting.title;
+      document.getElementById('description').value = meeting.description;
+      document.getElementById('date').value = meeting.date;
+      document.getElementById('customerId').value = meeting.customerId;
+    }
+
+    document.getElementById('editMeetingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const date = document.getElementById('date').value;
+      const customerId = document.getElementById('customerId').value;
+
+      const response = await fetch(`/api/meetings/${meetingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, date, customerId })
+      });
+
+      if (response.ok) {
+        window.location.href = 'meetings.html';
+      } else {
+        alert('Failed to update meeting');
+      }
+    });
+
+    fetchMeeting();
+  </script>
+</body>
+</html>

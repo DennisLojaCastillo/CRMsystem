@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script defer src="../js/navbar.js"></script>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">Login</h1>
+      <form id="loginForm">
+        <div class="field">
+          <label class="label" for="username">Username:</label>
+          <div class="control">
+            <input class="input" type="text" id="username" name="username" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="password">Password:</label>
+          <div class="control">
+            <input class="input" type="password" id="password" name="password" required>
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-primary" type="submit">Login</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  <script>
+    // Load the navbar
+    fetch('navbar.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
+      });
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password }),
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Login successful') {
+          window.location.href = 'index.html'; // Sørg for, at denne sti er korrekt
+        } else {
+          alert('Login failed: ' + data.error);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

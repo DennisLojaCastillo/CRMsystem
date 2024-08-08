@@ -1,0 +1,28 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.container {
+  margin-top: 60px;
+}
+
+.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin-top: 60px; /* Juster denne værdi baseret på navbarens højde */
+}
+
+.section {
+  width: 100%;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM System Test</title>
+</head>
+<body>
+  <button id="create">Create Customer</button>
+  <button id="getAll">Get All Customers</button>
+  <button id="getById">Get Customer By ID</button>
+  <button id="update">Update Customer</button>
+  <button id="delete">Delete Customer</button>
+  <pre id="output"></pre>
+
+  <script>
+    document.getElementById('create').addEventListener('click', () => {
+      fetch('/api/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'John Doe', email: 'john.doe@example.com', phone: '12345678' })
+      })
+      .then(response => response.json())
+      .then(data => document.getElementById('output').textContent = JSON.stringify(data, null, 2));
+    });
+
+    document.getElementById('getAll').addEventListener('click', () => {
+      fetch('/api/customers')
+        .then(response => response.json())
+        .then(data => document.getElementById('output').textContent = JSON.stringify(data, null, 2));
+    });
+
+    document.getElementById('getById').addEventListener('click', () => {
+      fetch('/api/customers/1')
+        .then(response => response.json())
+        .then(data => document.getElementById('output').textContent = JSON.stringify(data, null, 2));
+    });
+
+    document.getElementById('update').addEventListener('click', () => {
+      fetch('/api/customers/1', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'Jane Doe', email: 'jane.doe@example.com', phone: '87654321' })
+      })
+      .then(response => response.json())
+      .then(data => document.getElementById('output').textContent = JSON.stringify(data, null, 2));
+    });
+
+    document.getElementById('delete').addEventListener('click', () => {
+      fetch('/api/customers/1', { method: 'DELETE' })
+        .then(response => response.text())
+        .then(data => document.getElementById('output').textContent = data);
+    });
+  </script>
+</body>
+</html>

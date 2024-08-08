@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Customer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <script defer src="../../js/navbar.js"></script>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Edit Customer</h1>
+        <form id="editCustomerForm">
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input class="input" type="text" id="name" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <input class="input" type="email" id="email" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Phone</label>
+            <div class="control">
+              <input class="input" type="text" id="phone" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Company</label>
+            <div class="control">
+              <input class="input" type="text" id="company" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Website</label>
+            <div class="control">
+              <input class="input" type="text" id="website" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Industry</label>
+            <div class="control">
+              <input class="input" type="text" id="industry" required>
+            </div>
+          </div>
+          <div class="control">
+            <button class="button is-primary" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+  <script>
+    // Load the navbar
+    fetch('../navbar.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('navbar-container').innerHTML = html;
+      });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('id');
+
+    async function fetchCustomer() {
+      const response = await fetch(`/api/customers/${customerId}`);
+      const customer = await response.json();
+      document.getElementById('name').value = customer.name;
+      document.getElementById('email').value = customer.email;
+      document.getElementById('phone').value = customer.phone;
+      document.getElementById('company').value = customer.company;
+      document.getElementById('website').value = customer.website;
+      document.getElementById('industry').value = customer.industry;
+    }
+
+    document.getElementById('editCustomerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const company = document.getElementById('company').value;
+      const website = document.getElementById('website').value;
+      const industry = document.getElementById('industry').value;
+
+      const response = await fetch(`/api/customers/${customerId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, company, website, industry })
+      });
+
+      if (response.ok) {
+        window.location.href = 'customers.html';
+      } else {
+        alert('Failed to update customer');
+      }
+    });
+
+    fetchCustomer();
+  </script>
+</body>
+</html>

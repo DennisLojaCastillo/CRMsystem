@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.io Test</title>
+</head>
+<body>
+  <h1>Socket.io Test</h1>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('meetingCreated', (data) => {
+      console.log('Meeting created:', data);
+      // Opdater din brugergrænseflade med den nye mødeinformation
+    });
+
+    socket.on('meetingUpdated', (data) => {
+      console.log('Meeting updated:', data);
+      // Opdater din brugergrænseflade med de opdaterede mødeinformationer
+    });
+
+    socket.on('meetingDeleted', (data) => {
+      console.log('Meeting deleted:', data);
+      // Fjern det slettede møde fra din brugergrænseflade
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+  </script>
+</body>
+</html>
